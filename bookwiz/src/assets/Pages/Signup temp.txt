@@ -1,0 +1,151 @@
+import { Formik, Form } from "formik";
+import { motion } from "framer-motion";
+
+import * as Yup from "yup";
+
+const Signup = () => {
+  return (
+    <div className="flex h-screen">
+      <div className="w-1/2 bg-white flex items-center p-10">
+        <div className="bg-white flex flex-col items-begin ml-[130px] w-[60%]">
+          <motion.div
+            className="flex flex-col"
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{
+              duration: 1.5,
+              ease: [0.04, 0.62, 0.23, 0.98],
+            }}
+          >
+            <div className="text-[30px] font-[MuseoModerno] font-semibold  text-[#3F51B5] pb-[30px]">
+              BookWiz
+            </div>
+            <div className="text-[20px] font-[Montserrat] font-semibold ">
+              Create Your Account
+            </div>
+            <div className="text-[12px] font-[Montserrat] font-semibold pb-5 text-[#818181]">
+              Welcome, Please sign up to continue.
+            </div>
+            <Formik
+              initialValues={{
+                name: "",
+                email: "",
+                password: "",
+                confirmpassword: "",
+              }}
+              validate={Yup.object({
+                name: Yup.string()
+                  .required("Name is required")
+                  .min(3, "Name must be at least 3 characters long"),
+                email: Yup.string()
+                  .required("Email is required")
+                  .email("Email is invalid"),
+                password: Yup.string()
+                  .min(8, "Password must be at least 8 characters long")
+                  .matches(
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
+                    "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character"
+                  )
+                  .required("Password is required"),
+                confirmpassword: Yup.string()
+                  .oneOf([Yup.ref("password"), null], "Passwords must match")
+                  .required("Confirm Password is required"),
+                agreeToTerms: Yup.bool().oneOf(
+                  [true],
+                  "You must agree to the terms and conditions"
+                ),
+              })}
+              onSubmit={(values) => {
+                console.log(values);
+              }}
+            >
+              {({ errors, touched }) => {
+                return (
+                  <form>
+                    <div className="mb-4">
+                      <label
+                        htmlFor="name"
+                        className="block text-gray-800 text-[Montserrat] font-semibold"
+                      >
+                        Name
+                      </label>
+                      <input
+                        id="name"
+                        name="name"
+                        placeholder="John Doe"
+                        type="text"
+                        className="border w-full border-gray-300 px-3 py-2 text-gray-900 rounded-xl focus:outline-none focus:border-[#003F8F] transition duration-500"
+                      />
+                      {errors.name && touched.name
+                        ? console.log(errors.name)
+                        : ""}
+                      <div className="text-red-500">{errors.name}</div>
+                    </div>
+
+                    <div className="mb-4 input-block">
+                      <label
+                        htmlFor="email"
+                        className="block text-gray-800 text-[Montserrat] font-semibold"
+                      >
+                        Email
+                      </label>
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="john@doe.com"
+                        className="border w-full border-gray-300 px-3 py-2 text-gray-900 rounded-xl focus:outline-none focus:border-[#003F8F] transition duration-500"
+                      />{" "}
+                      {errors.email && touched.email ? (
+                        <p className="text-red-500">{errors.email}</p>
+                      ) : null}
+                    </div>
+
+                    <div className="mb-4">
+                      <label
+                        htmlFor="password"
+                        className="block text-gray-800 text-[Montserrat] font-semibold"
+                      >
+                        Password
+                      </label>
+                      <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        className="border w-full border-gray-300 px-3 py-2 text-gray-900 rounded-xl focus:outline-none focus:border-[#003F8F] transition duration-500"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label
+                        htmlFor="confirmpassword"
+                        className="block text-gray-800 text-[Montserrat] font-semibold"
+                      >
+                        Confim Password
+                      </label>
+                      <input
+                        id="confirmpassword"
+                        name="confirmpassword"
+                        type="password"
+                        className="border w-full border-gray-300 px-3 py-2 text-gray-900 rounded-xl focus:outline-none focus:border-[#003F8F] transition duration-500"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="bg-[#3F51B5]  text-white py-2 px-4 rounded hover:bg-[#003F8F]"
+                    >
+                      Sign up
+                    </button>
+                  </form>
+                );
+              }}
+            </Formik>
+          </motion.div>
+        </div>
+      </div>
+      <div className="w-1/2 bg-[#3F51B5]" />
+    </div>
+  );
+};
+
+export default Signup;
