@@ -16,7 +16,7 @@ const Signup = () => {
 
     axios({
       method: "post",
-      url: "https://your-backend-api-url.com/signup",
+      url: "http://localhost:8000/api/v1/registration",
       data,
       headers: { "Content-Type": "application/json" },
     })
