@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { motion } from "framer-motion";
 import * as Yup from "yup";
 
+import axios from "axios";
 import { SuccessPopup } from "../Components";
 import { Reading, Polygon1, Polygon2 } from "../Images";
 import RandomQuotes from "../Components/RandomQuotes";
@@ -37,18 +38,17 @@ const SignupForm = () => {
       ),
     }),
     onSubmit: async (values) => {
-      const response = await fetch("http://localhost:8000/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      const data = await response.json();
-
-      console.log(data);
-      setIsSubmitted(true);
+      try {
+        await axios.post("http://localhost:8000/api/auth/signup", values);
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          formik.setErrors({ form: error.response.data.message });
+        } else {
+          formik.setErrors({
+            form: "Something went wrong. Please try again later.",
+          });
+        }
+      }
     },
   });
 
@@ -207,13 +207,21 @@ const SignupForm = () => {
                 </div>
               </div>
             </form>
-            <div>
-              {(() => {
-                if (isSubmitted) {
-                  return <SuccessPopup />;
-                }
-              })()}
-            </div>
+            {formik.errors.form && (
+              <Popup
+                message={formik.errors.form}
+                statusCode={400}
+                position="center"
+              />
+            )}
+
+            {formik.status === "success" && (
+              <Popup
+                message="Form submitted successfully!"
+                statusCode={200}
+                position="center"
+              />
+            )}
           </motion.div>
         </div>
       </div>
